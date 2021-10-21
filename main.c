@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include "snake.h"
 
 int main(){
-    printf("Hello World!");
+    hello_world();
     return 0;
 }
