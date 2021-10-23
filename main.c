@@ -112,7 +112,13 @@ int main(int argc, char *argv[]){
         //     foods = foods->next;
         // }
         // printf("%d\n", count_foods);
-        dir = find_direction(board, next_move(board, dir), dir);
+        printf("Actual antes en find_direction (%d, %d)\n", snake->row, snake->col);
+        while (!next_move(board, dir))
+        {
+            dir = rand() % 4;
+        }
+        
+        // dir = find_direction(board, next_move(board, dir), dir);
         // printf("%d\n", new_direction);
         enum Status status = move_snake(board, dir);
         waitFor(1);
