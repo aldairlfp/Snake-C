@@ -5,8 +5,8 @@ enum Status { Success, Failure };
 
 struct PointList 
 {
-    int x;
-    int y;
+    int row;
+    int col;
     struct PointList* next;
 };
 
@@ -15,8 +15,8 @@ typedef struct PointList PointList;
 typedef struct {
     PointList* snake;
     PointList* foods;
-    int xsize;
-    int ysize;
+    int rows;
+    int cols;
 } Board;
 
 bool is_same_place(PointList* cells1, PointList* cells2);
@@ -24,11 +24,11 @@ enum Status move_snake(Board* board, enum Direction dir);
 PointList* next_move(Board* board, enum Direction dir);
 PointList* create_cell(int x, int y);
 PointList* create_random_cell(int x, int y);
-PointList* create_snake(int xmax, int ymax);
-Board* create_board(PointList* sanke, PointList* food, int xsize, int ysize);
+PointList* create_snake(int rows, int cols);
+Board* create_board(PointList* sanke, PointList* food, int rows, int cols);
 bool list_contains(PointList* cell, PointList* list);
 bool remove_from_list(PointList* elt, PointList** list);
-bool is_on_board(Board* board, int x, int y);
+bool is_out_of_board(Board* board, int x, int y);
 void add_new_food(Board* board);
 int snake_or_food(Board* board, int x, int y);
 void grow_snake(PointList* snake, int size);
