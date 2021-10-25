@@ -121,9 +121,9 @@ PointList* next_move(Board* board, enum Direction dir) {
         new_col = snake->col + 1;
         break;
     }
-    if(is_out_of_board(board, new_row, new_col)){
-        printf("Snake(%d, %d) new Snake(%d, %d)\n", snake->row, snake->col, new_row, new_col);
-        printf("No camino\n");
+    int is_snake_or_food = snake_or_food(board, new_row, new_col);
+    if(is_out_of_board(board, new_row, new_col) || 
+        ( is_snake_or_food != 0 && is_snake_or_food != 3)){
         return NULL;
     }
     else

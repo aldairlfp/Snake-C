@@ -30,5 +30,5 @@ bool list_contains(PointList* cell, PointList* list);
 bool remove_from_list(PointList* elt, PointList** list);
 bool is_out_of_board(Board* board, int x, int y);
 void add_new_food(Board* board);
-int snake_or_food(Board* board, int x, int y);
 void grow_snake(PointList* snake, int size);
+int snake_or_food(Board* board, int x, int y);
