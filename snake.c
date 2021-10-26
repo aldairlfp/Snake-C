@@ -123,11 +123,11 @@ enum Status move_snake(Board* board, enum Direction dir) {
 bool is_same_place(PointList* cell1, PointList* cell2) {
     return cell1->row == cell2->row && cell1->col == cell2->col;
 }
-
+// To check if the position is inside the board limits
 bool is_out_of_board(Board* board, int row, int col) {
     return row < 0 || col < 0 || row >= board->rows || col >= board->cols;     
 }
-
+// Knowing an address returns the new position where the snake is going to move
 PointList* next_move(Board* board, enum Direction dir) {
     PointList* snake = board -> snake;
     int new_row = snake->row;
@@ -155,11 +155,11 @@ PointList* next_move(Board* board, enum Direction dir) {
     else
         return create_cell(new_row, new_col);
 }
-
+// Returns a random box with upper bound the number of rows and columns that the board has
 PointList* create_random_cell(int xmax, int ymax) {
     return create_cell(rand() % xmax, rand() % ymax);
 }
-
+// Add the 5 new fruits that the snake must eat to grow in random positions
 void add_new_food(Board* board) {
     PointList* new_food;
     do {
@@ -169,7 +169,7 @@ void add_new_food(Board* board) {
     new_food->next = board->foods;
     board->foods = new_food;
 }
-
+// Returns true if the position to which the snake wants to move exists a part of its body
 bool list_contains(PointList* cell, PointList* list) {
     PointList* s = list;
     while (s)
@@ -180,7 +180,7 @@ bool list_contains(PointList* cell, PointList* list) {
     }
     return false;
 }
-
+// Create a cell
 PointList* create_cell(int row, int col) {
     PointList* cell = malloc(sizeof(*cell));
     cell->row = row;
@@ -188,7 +188,7 @@ PointList* create_cell(int row, int col) {
     cell->next = NULL;
     return cell;
 }
-
+// Create the board
 Board* create_board(PointList* snake, PointList* foods, int rows, int cols) {
     Board* board = malloc(sizeof(*board));
     board->rows = rows;
@@ -198,7 +198,7 @@ Board* create_board(PointList* snake, PointList* foods, int rows, int cols) {
     board->score = 0;
     return board;
 }
-
+// Create the Snake
 PointList* create_snake(int rows, int cols) {
   PointList* a = create_cell(rows / 2, cols / 2);
   PointList* b = create_cell(a->row, a->col - 1);
@@ -227,7 +227,7 @@ int snake_or_food(Board* board, int row, int col) {
     }
     return 0;
 }
-
+// To know if there is food left on the board to know whether to add new food or not
 bool no_food_in_board(Board* board) {
     PointList* foods = board->foods;
     if(!foods)
