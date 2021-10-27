@@ -122,6 +122,7 @@ void print_board(Board* board) {
             }
             printf("\n");
         }
+    printf("Score: %d\n", board->score);
 }
 
 int main(int argc, char *argv[]){

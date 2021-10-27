@@ -5,26 +5,38 @@
 
 // Removes from the list or return false
 bool remove_from_list(PointList* elt, PointList** list) {
-    PointList *currP, *prevP;
-    prevP = NULL;
+    PointList *previous, *current;
 
-    // printf("(%d, %d)\n", (*list)->row, (*list)->col);
-    // printf("(%d, %d)\n", currP->row, currP->col);
-    
-    for (currP = *list; currP != NULL; prevP = currP, currP = currP->next)
-    {
-        if(is_same_place(elt, currP)) {
-            // It's the first element
-            if(prevP == NULL)
-                *list = currP->next;
-            else
-                prevP = currP->next;
-            currP = NULL;
-            // printf("(%d, %d)\n", currP->row, currP->col);
-            // free(currP);
-            // printf("(%d, %d)\n", currP->row, currP->col);
+    if (*list == NULL) {
+        return -1;
+    }
+
+    if (is_same_place(*list, elt)) {
+        PointList * retval = NULL;
+        PointList * next_node = NULL;
+
+        if (*list == NULL) {
+            return -1;
+        }
+
+        next_node = (*list)->next;
+        retval = (*list);
+        free(*list);
+        *list = next_node;
+        return true;
+    }
+
+    previous = *list;
+    current = (*list)->next;
+    while (current) {
+        if (is_same_place(current, elt)) {
+            previous->next = current->next;
+            free(current);
             return true;
         }
+
+        previous = current;
+        current  = current->next;
     }
     return false;
 }
@@ -57,16 +69,18 @@ enum Status move_snake(Board* board, enum Direction dir) {
         board->snake = body2; 
         beginning->next = board->snake;
         board->snake = beginning;
+        board->score++;
         remove_from_list(beginning, &(board->foods));
         if(no_food_in_board(board)) {
-            for (int i = 0; i < 5; i++)
+            int space_for_food = board->rows * board->cols - 
+                snake_length_in_board(board->snake) - 1;
+            // printf("%d\n", space_for_food);
+            // printf("%d\n", snake_length_in_board(board->snake));
+            for (int i = 0; i < 5 && i < space_for_food; i++)
             {
                 add_new_food(board);
             }
-            
-        }
-        // add_new_food(board);
-    
+        }    
         return Success;
     }
 
@@ -182,6 +196,7 @@ Board* create_board(PointList* snake, PointList* foods, int rows, int cols) {
     board->cols = cols;
     board->snake = snake;
     board->foods = foods;
+    board->score = 0;
     return board;
 }
 
@@ -219,4 +234,19 @@ bool no_food_in_board(Board* board) {
     if(!foods)
         return true;
     return false;
+}
+
+int snake_length_in_board(PointList* snake) {
+    int length = 0;
+    PointList* psnake = snake;
+    PointList *current, *prev;
+    while (psnake->next)
+    {
+        current = create_cell(psnake->next->row, psnake->next->col);
+        prev = create_cell(psnake->row, psnake->col);
+        if(!is_same_place(prev, current))
+            length++;
+        psnake = psnake->next;
+    }
+    return length;
 }

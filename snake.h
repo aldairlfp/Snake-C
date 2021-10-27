@@ -17,6 +17,7 @@ typedef struct {
     PointList* foods;
     int rows;
     int cols;
+    int score;
 } Board;
 
 bool is_same_place(PointList* cells1, PointList* cells2);
@@ -33,3 +34,4 @@ bool no_food_in_board(Board* board);
 void add_new_food(Board* board);
 void grow_snake(PointList* snake, int size);
 int snake_or_food(Board* board, int x, int y);
+int snake_length_in_board(PointList* snake);
