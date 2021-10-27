@@ -119,7 +119,7 @@ enum Status move_snake(Board* board, enum Direction dir) {
     }
     return Success;
 }
-
+// To know if two positions coincide
 bool is_same_place(PointList* cell1, PointList* cell2) {
     return cell1->row == cell2->row && cell1->col == cell2->col;
 }
@@ -207,7 +207,7 @@ PointList* create_snake(int rows, int cols) {
   b->next = c;
   return a;
 }
-
+// If the head of the snake is in the entered position, it returns 1, if it is the body of the snake, it returns 2, if it is food, it returns 3, and if there is nothing, it returns 0.
 int snake_or_food(Board* board, int row, int col) {
     if(is_same_place(board->snake, create_cell(row, col)))
         return 1;
@@ -234,7 +234,7 @@ bool no_food_in_board(Board* board) {
         return true;
     return false;
 }
-
+// Return the size of the snake regardless of what it has grown after eating the last fruit
 int snake_length_in_board(PointList* snake) {
     int length = 0;
     PointList* psnake = snake;
@@ -249,7 +249,7 @@ int snake_length_in_board(PointList* snake) {
     }
     return length;
 }
-
+// In case that in the next position crash chooses a new address random
 int* unique_ways(enum Direction dir) {
     int * ways = (int*)malloc(2 * sizeof(int*));
     if(dir == 0 || dir == 1) {
@@ -266,7 +266,7 @@ int* unique_ways(enum Direction dir) {
     }
     return ways;
 }
-
+// To know if the snake collides in the direction it is pointing
 enum Direction if_collide(Board* board, enum Direction dir) {
     if(next_move(board, dir))
         return dir;
@@ -280,6 +280,7 @@ enum Direction if_collide(Board* board, enum Direction dir) {
     return dir;
 }
 
+// To know if there is any fruit in any direction, if there is, choose that direction
 enum Direction find_direction(Board* board, enum Direction dir) {
     int dr[4] = { -1, 1, 0, 0};
     int dc[4] = { 0, 0, -1, 1};
