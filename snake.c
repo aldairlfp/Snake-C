@@ -7,6 +7,9 @@
 bool remove_from_list(PointList* elt, PointList** list) {
     PointList *currP, *prevP;
     prevP = NULL;
+
+    // printf("(%d, %d)\n", (*list)->row, (*list)->col);
+    // printf("(%d, %d)\n", currP->row, currP->col);
     
     for (currP = *list; currP != NULL; prevP = currP, currP = currP->next)
     {
@@ -16,7 +19,10 @@ bool remove_from_list(PointList* elt, PointList** list) {
                 *list = currP->next;
             else
                 prevP = currP->next;
-            free(currP);
+            currP = NULL;
+            // printf("(%d, %d)\n", currP->row, currP->col);
+            // free(currP);
+            // printf("(%d, %d)\n", currP->row, currP->col);
             return true;
         }
     }
@@ -31,9 +37,9 @@ enum Status move_snake(Board* board, enum Direction dir) {
     
     // If we've gone backwards, don't do anything
     if (board->snake->next && is_same_place(beginning, board->snake->next)) {
-    beginning->next = NULL;
-    free(beginning);
-    return Success;
+        beginning->next = NULL;
+        free(beginning);
+            return Success;
     }
 
     // Check for collisions
@@ -52,6 +58,13 @@ enum Status move_snake(Board* board, enum Direction dir) {
         beginning->next = board->snake;
         board->snake = beginning;
         remove_from_list(beginning, &(board->foods));
+        if(no_food_in_board(board)) {
+            for (int i = 0; i < 5; i++)
+            {
+                add_new_food(board);
+            }
+            
+        }
         // add_new_food(board);
     
         return Success;
@@ -137,9 +150,6 @@ PointList* create_random_cell(int xmax, int ymax) {
 void add_new_food(Board* board) {
     PointList* new_food;
     do {
-        // PointList* point = create_random_cell(board->xsize, board->ysize);
-        // printf("%d, ", point->x);
-        // printf("%d\n", point->y);
         new_food = create_random_cell(board->rows, board->cols);
     }
     while (list_contains(new_food, board->foods) || list_contains(new_food, board->snake));
@@ -204,6 +214,9 @@ int snake_or_food(Board* board, int row, int col) {
     return 0;
 }
 
-void grow_snake(PointList* snake, int size){
-
+bool no_food_in_board(Board* board) {
+    PointList* foods = board->foods;
+    if(!foods)
+        return true;
+    return false;
 }

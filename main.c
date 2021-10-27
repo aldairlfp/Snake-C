@@ -142,6 +142,7 @@ int main(int argc, char *argv[]){
     do {
         clear();
         print_board(board);
+        // print_foods(board);
         // dir = find_direction(board, next_move(board, dir), dir);
         // printf("%d\n", new_direction);
         dir = find_direction(board, dir);

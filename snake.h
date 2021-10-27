@@ -29,6 +29,7 @@ Board* create_board(PointList* sanke, PointList* food, int rows, int cols);
 bool list_contains(PointList* cell, PointList* list);
 bool remove_from_list(PointList* elt, PointList** list);
 bool is_out_of_board(Board* board, int x, int y);
+bool no_food_in_board(Board* board);
 void add_new_food(Board* board);
 void grow_snake(PointList* snake, int size);
 int snake_or_food(Board* board, int x, int y);
