@@ -11,6 +11,7 @@ bool remove_from_list(PointList* elt, PointList** list) {
         return -1;
     }
 
+    // The element is in the first position
     if (is_same_place(*list, elt)) {
         PointList * retval = NULL;
         PointList * next_node = NULL;
@@ -26,6 +27,7 @@ bool remove_from_list(PointList* elt, PointList** list) {
         return true;
     }
 
+    // The element is in other position
     previous = *list;
     current = (*list)->next;
     while (current) {
@@ -41,6 +43,7 @@ bool remove_from_list(PointList* elt, PointList** list) {
     return false;
 }
 
+// The snake will move depending on the direction
 enum Status move_snake(Board* board, enum Direction dir) {
     // Create a new beginning. Check boundaries.
     PointList* beginning = next_move(board, dir);
@@ -60,7 +63,7 @@ enum Status move_snake(Board* board, enum Direction dir) {
 
     // Check for food
     if (list_contains(beginning, board->foods)) {
-        // Attach the beginning to the rest of the snake;
+        // Attach the beginning to the rest of the snake and grow up in 3 units;
         PointList* body1 = create_cell(board->snake->row, board->snake->col);
         body1->next = board->snake;
         board->snake = body1;
@@ -70,12 +73,12 @@ enum Status move_snake(Board* board, enum Direction dir) {
         beginning->next = board->snake;
         board->snake = beginning;
         board->score++;
+        // Remove the food
         remove_from_list(beginning, &(board->foods));
+        // Refill the board with foods
         if(no_food_in_board(board)) {
             int space_for_food = board->rows * board->cols - 
                 snake_length_in_board(board->snake) - 1;
-            // printf("%d\n", space_for_food);
-            // printf("%d\n", snake_length_in_board(board->snake));
             for (int i = 0; i < 5 && i < space_for_food; i++)
             {
                 add_new_food(board);
@@ -88,7 +91,7 @@ enum Status move_snake(Board* board, enum Direction dir) {
     beginning->next = board->snake;
     board->snake = beginning;
 
-    // Cut off the end
+    // Cut off the end and lengthen the snake
     int count_repeat = 0;
     bool repeat = false;
     PointList* end = board->snake;
@@ -101,18 +104,14 @@ enum Status move_snake(Board* board, enum Direction dir) {
         end = end->next;
     }
     if(repeat){
-        // PointList* to_free = end;
         PointList* snake = board->snake;
         while (count_repeat > 0)
         {
             board->snake = board->snake->next;
             count_repeat--;
-        }
-        
+        }        
         board->snake->next = end->next->next;
         board->snake = snake;
-        // free(to_free);
-        // to_free = NULL;
     }
     else {
     free(end->next);
@@ -249,4 +248,57 @@ int snake_length_in_board(PointList* snake) {
         psnake = psnake->next;
     }
     return length;
+}
+
+int* unique_ways(enum Direction dir) {
+    int * ways = (int*)malloc(2 * sizeof(int*));
+    if(dir == 0 || dir == 1) {
+        int random0 = rand() % 2 + 2;
+        int random1 = (random0 + 1) % 2 + 2;
+        ways[0] = random0;
+        ways[1] = random1;
+    }
+    else {
+        int random0 = rand() % 2;
+        int random1 = (random0 + 1) % 2;     
+        ways[0] = random0;
+        ways[1] = random1;
+    }
+    return ways;
+}
+
+enum Direction if_collide(Board* board, enum Direction dir) {
+    if(next_move(board, dir))
+        return dir;
+    int * ways = unique_ways(dir);
+    for (int i = 0; i < 2; i++) {
+        PointList* beginning = next_move(board, *(ways + i)); 
+        if(beginning) {
+            return ways[i];
+        }
+    }
+    return dir;
+}
+
+enum Direction find_direction(Board* board, enum Direction dir) {
+    int dr[4] = { -1, 1, 0, 0};
+    int dc[4] = { 0, 0, -1, 1};
+    for (int i = 0; i < sizeof(dr)/sizeof(dr[0]); i++)
+    {
+        int k = 1;
+        while (true)
+        {
+            int new_r = board->snake->row + k * dr[i];
+            int new_c = board->snake->col + k * dc[i];
+            int is_snake_or_food = snake_or_food(board, new_r, new_c);
+            if(is_out_of_board(board, new_r, new_c) || is_snake_or_food == 2) {
+                break;
+            }
+            if(is_snake_or_food == 3) {
+                return i;
+            }
+            k++;
+        }        
+    }
+    return if_collide(board, dir);
 }

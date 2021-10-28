@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include "snake.h"
 
+// Clear the command line
 void clear(){
     #if defined(__linux__) || defined(__unix__) || defined(__Apple__)
         system("clear");
@@ -14,69 +15,14 @@ void clear(){
     #endif
 }
 
-void waitFor (unsigned int secs) {
-    unsigned int retTime = time(0) + secs;   // Get finishing time.
-    while (time(0) < retTime);               // Loop until it arrives.
-}
-
-int* unique_ways(enum Direction dir) {
-    int * ways = (int*)malloc(2 * sizeof(int*));
-    if(dir == 0 || dir == 1) {
-        int random0 = rand() % 2 + 2;
-        int random1 = (random0 + 1) % 2 + 2;
-        ways[0] = random0;
-        ways[1] = random1;
-    }
-    else {
-        int random0 = rand() % 2;
-        int random1 = (random0 + 1) % 2;     
-        ways[0] = random0;
-        ways[1] = random1;
-    }
-    return ways;
-}
-
-enum Direction if_collide(Board* board, enum Direction dir) {
-    if(next_move(board, dir))
-        return dir;
-    int * ways = unique_ways(dir);
-    for (int i = 0; i < 2; i++) {
-        // printf("%d\n", *ways + 1);
-        PointList* beginning = next_move(board, *(ways + i)); 
-        if(beginning) {
-            // printf("%d\n", ways[i]);
-            return ways[i];
-        }
-    }
-    return dir;
-}
-
-enum Direction find_direction(Board* board, enum Direction dir) {
-    int dr[4] = { -1, 1, 0, 0};
-    int dc[4] = { 0, 0, -1, 1};
-    // printf("Actual en find_direction (%d, %d)\n", new_way->row, new_way->col);
-    for (int i = 0; i < sizeof(dr)/sizeof(dr[0]); i++)
+void waitForIt () {
+    for (int i = 0; i < 100000000; i++)
     {
-        int k = 1;
-        while (true)
-        {
-            int new_r = board->snake->row + k * dr[i];
-            int new_c = board->snake->col + k * dc[i];
-            int is_snake_or_food = snake_or_food(board, new_r, new_c);
-            if(is_out_of_board(board, new_r, new_c) || is_snake_or_food == 2) {
-                break;
-            }
-            if(is_snake_or_food == 3) {
-                return i;
-            }
-            k++;
-        }        
-    }
-    return if_collide(board, dir);
+        // Wait for it
+    }    
 }
 
 void print_snake(Board* board) {
-    // printf("(%d, %d) \n", board->snake->row, board->snake->col);
     PointList* snake = board->snake;
     int count_snake = 0;
     while (snake)
@@ -86,6 +32,7 @@ void print_snake(Board* board) {
             snake = snake->next;
         }
 }
+
 
 void print_foods(Board* board) {
     PointList* foods = board->foods;
@@ -132,7 +79,6 @@ int main(int argc, char *argv[]){
     enum Direction dir = Right;
 
     Board* board = create_board(create_snake(rows, cols), NULL, rows, cols);
-    // printf("(%d, %d) \n", board->snake->row, board->snake->col);
     int i;
     for (i = 0; i < 5; i++) {
         add_new_food(board);
@@ -143,11 +89,8 @@ int main(int argc, char *argv[]){
     do {
         clear();
         print_board(board);
-        // print_foods(board);
-        // dir = find_direction(board, next_move(board, dir), dir);
-        // printf("%d\n", new_direction);
         dir = find_direction(board, dir);
-        sleep(1);
+        waitForIt();
         status = move_snake(board, dir);
     }
     while (status != Failure);

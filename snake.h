@@ -35,3 +35,6 @@ void add_new_food(Board* board);
 void grow_snake(PointList* snake, int size);
 int snake_or_food(Board* board, int x, int y);
 int snake_length_in_board(PointList* snake);
+int* unique_ways(enum Direction dir);
+enum Direction if_collide(Board* board, enum Direction dir);
+enum Direction find_direction(Board* board, enum Direction dir);
