@@ -3,13 +3,15 @@ Snake-C
 
 Simple snake game written in C.
 
-You can run using
+You can build using
 
-```
+```shell
 make
 ```
+
 Then do
-```
+
+```shell
 ./snake xsize ysize
 ```
 
